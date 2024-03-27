@@ -76,7 +76,7 @@ const Upload = () => {
           </tr>
         </thead>
         <tbody>
-          {geoDataList.map((data) => (
+          {geoDataList && geoDataList.map((data) => (
             <tr key={data.id}>
               <td>{data.title}</td>
             </tr>
