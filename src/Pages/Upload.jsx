@@ -10,13 +10,11 @@ const Upload = () => {
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
-    
     if (storedUserId) {
       setUserId(storedUserId);
     }
     fetchGeoData(storedUserId);
   }, []);
-
 
   const fetchGeoData = async (id) => {
     const baseURL = `http://localhost:8080/geodata/user?user_id=${id}`;
@@ -30,9 +28,13 @@ const Upload = () => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleTitleChange = (e) => setTitle(e.target.value);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!userId) {
+      alert("Please Login");
+      return;
+    }
     if (!file) {
       alert('Please select a file');
       return;
@@ -47,15 +49,10 @@ const Upload = () => {
       await axios.post('http://localhost:8080/geodata', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-        if(!userId){
-            alert("Please Login")
-            return
-        }
       alert('File uploaded successfully');
-      fetchGeoData();
+      fetchGeoData(userId);
       setFile(null);
       setTitle("");
-
     } catch (error) {
       console.error('Error uploading file:', error);
       alert('Error uploading file');
@@ -68,7 +65,7 @@ const Upload = () => {
         <h2>Upload a .geojson File</h2>
         <form onSubmit={handleSubmit}>
           <input type="text" placeholder="Title" value={title} onChange={handleTitleChange} />
-          <input type="file" accept=".geojson" onChange={handleFileChange} />
+          <input type="file" accept=".geojson,.kml" onChange={handleFileChange} />
           <button className="btn btn1" type="submit">Upload</button>
         </form>
       </div>
